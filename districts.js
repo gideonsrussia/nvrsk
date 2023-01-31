@@ -1,90 +1,38 @@
 ymaps.ready(init);
 
+async function getCoords(url) {
+  const request = new Request(url);
+  const response = await fetch(request);
+  const coordsText = await response.text();
+  return JSON.parse(coordsText);
+}
+
 function init() {
-    var myMap = new ymaps.Map("map", {
+    const myMap = new ymaps.Map("map", {
             center: [44.72, 37.75],
-            zoom: 11
+            zoom: 12
         }, {
             searchControlProvider: 'yandex#search'
         });
-
-    // Создаем многоугольник, используя класс GeoObject.
-    var myGeoObject = new ymaps.GeoObject({
-        // Описываем геометрию геообъекта.
-        geometry: {
-            // Тип геометрии - "Многоугольник".
-            type: "Polygon",
-            // Указываем координаты вершин многоугольника.
-            coordinates: [
-                // Координаты вершин внешнего контура.
-                [
-                    [55.75, 37.80],
-                    [55.80, 37.90],
-                    [55.75, 38.00],
-                    [55.70, 38.00],
-                    [55.70, 37.80]
-                ],
-                // Координаты вершин внутреннего контура.
-                [
-                    [55.75, 37.82],
-                    [55.75, 37.98],
-                    [55.65, 37.90]
-                ]
-            ],
-            // Задаем правило заливки внутренних контуров по алгоритму "nonZero".
-            fillRule: "nonZero"
-        },
-        // Описываем свойства геообъекта.
-        properties:{
-            // Содержимое балуна.
-            balloonContent: "Многоугольник"
-        }
-    }, {
-        // Описываем опции геообъекта.
-        // Цвет заливки.
-        fillColor: '#00FF00',
-        // Цвет обводки.
-        strokeColor: '#0000FF',
-        // Общая прозрачность (как для заливки, так и для обводки).
-        opacity: 0.5,
-        // Ширина обводки.
-        strokeWidth: 5,
-        // Стиль обводки.
-        strokeStyle: 'shortdash'
-    });
-
-    // Добавляем многоугольник на карту.
-    myMap.geoObjects.add(myGeoObject);
+    
+    const coords = await getCoords("coords.json");
 
     // Создаем многоугольник, используя вспомогательный класс Polygon.
-    var myPolygon = new ymaps.Polygon([
-        // Указываем координаты вершин многоугольника.
-        // Координаты вершин внешнего контура.
-        [
-            [55.75, 37.50],
-            [55.80, 37.60],
-            [55.75, 37.70],
-            [55.70, 37.70],
-            [55.70, 37.50]
-        ],
-        // Координаты вершин внутреннего контура.
-        [
-            [55.75, 37.52],
-            [55.75, 37.68],
-            [55.65, 37.60]
-        ]
-    ], {
+    const east = new ymaps.Polygon(coords.east, {
         // Описываем свойства геообъекта.
         // Содержимое балуна.
-        hintContent: "Многоугольник"
+        hintContent: "Восточный район"
     }, {
         // Задаем опции геообъекта.
         // Цвет заливки.
-        fillColor: '#00FF0088',
+        fillColor: '#00ff80',
         // Ширина обводки.
-        strokeWidth: 5
+        strokeWidth: .5,
+        strokeColor: '#000000',
+        // Общая прозрачность (как для заливки, так и для обводки).
+        opacity: 0.35,
     });
 
     // Добавляем многоугольник на карту.
-    myMap.geoObjects.add(myPolygon);
+    myMap.geoObjects.add(east);
 }
