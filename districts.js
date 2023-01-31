@@ -7,7 +7,7 @@ async function getCoords(url) {
   return JSON.parse(coordsText);
 }
 
-function init() {
+async function init() {
     const myMap = new ymaps.Map("map", {
             center: [44.72, 37.75],
             zoom: 12
